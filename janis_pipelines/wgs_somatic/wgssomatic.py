@@ -25,6 +25,9 @@ class WGSSomaticMultiCallers(WGSSomaticMultiCallersVariantsOnly, WGSSomaticGATK)
         self.add_gridss(
             normal_bam_source=self.normal.out_bam, tumor_bam_source=self.tumor.out_bam
         )
+        self.add_facets(
+            normal_bam_source=self.normal.out_bam, tumor_bam_source=self.tumor.out_bam
+        )
         self.add_gatk_variantcaller(
             normal_bam_source=self.normal.out_bam, tumor_bam_source=self.tumor.out_bam
         )

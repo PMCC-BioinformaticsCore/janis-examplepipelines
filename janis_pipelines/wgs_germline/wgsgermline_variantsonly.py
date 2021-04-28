@@ -15,7 +15,7 @@ from janis_bioinformatics.tools.variantcallers import (
     IlluminaGermlineVariantCaller,
     VardictGermlineVariantCaller,
 )
-from janis_core import Array, WorkflowMetadata
+from janis_core import Array, Float, Int, String, WorkflowMetadata
 from janis_core.operators.standard import FirstOperator
 from janis_unix.tools import UncompressArchive
 
@@ -171,7 +171,13 @@ class WGSGermlineMultiCallersVariantsOnly(WGSGermlineGATKVariantsOnly):
         )
 
     def add_vardict_variantcaller(self, bam_source):
-
+        self.input(
+            "allele_freq_threshold",
+            Float,
+            0.05,
+        ),
+        self.input("minMappingQual", Int(optional=True))
+        self.input("filter", String(optional=True))
         # Vardict
         self.step(
             "generate_vardict_headerlines",
@@ -184,8 +190,10 @@ class WGSGermlineMultiCallersVariantsOnly(WGSGermlineGATKVariantsOnly):
                 reference=self.reference,
                 intervals=self.vardict_intervals,
                 sample_name=self.sample_name,
-                allele_freq_threshold=0.05,
+                allele_freq_threshold=self.allele_freq_threshold,
                 header_lines=self.generate_vardict_headerlines.out,
+                minMappingQual=self.minMappingQual,
+                filter=self.filter,
             ),
             scatter="intervals",
         )
@@ -312,3 +320,5 @@ if __name__ == "__main__":
     }
     # w.translate("cwl", **args)
     w.translate("wdl", **args)
+
+    # WGSGermlineMultiCallersVariantsOnly().translate("wdl")
